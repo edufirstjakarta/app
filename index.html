@@ -257,6 +257,20 @@ table.t{width:100%;border-collapse:collapse;font-size:14px}
 .chk-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto;background:#FAFBFF;border:1px solid var(--line);border-radius:10px;padding:10px}
 .chk-list div{font-size:13px;font-weight:600;display:flex;gap:8px;align-items:flex-start}
 
+/* tutor fee & finance */
+.fee-box{background:#FAFBFF;border:1.5px dashed var(--blue-200);border-radius:14px;padding:12px}
+.fee-h{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--blue-d);margin-bottom:10px}
+.fee-h svg{width:15px;height:15px}
+.t td.in{color:#0B7A4F;font-weight:700}
+.t td.out{color:#B4282D;font-weight:700}
+.t tr.sumrow td{background:var(--blue-50);font-weight:800;border-bottom:0}
+.t tr.openrow td{background:#FAFBFF;color:var(--ink-2);font-style:italic}
+.lockcard{max-width:420px;margin:30px auto;text-align:center}
+.lockcard .ic{width:62px;height:62px;border-radius:18px;background:var(--blue-50);color:var(--blue);display:grid;place-items:center;margin:4px auto 12px}
+.lockcard .ic svg{width:30px;height:30px}
+.tut-card{cursor:pointer}
+.tut-card.on{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-100)}
+
 /* modal */
 .modal-bg{position:fixed;inset:0;background:rgba(14,17,80,.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:36px 14px;overflow-y:auto}
 .modal{background:#fff;border-radius:20px;width:100%;max-width:560px;box-shadow:0 30px 60px -20px rgba(0,0,0,.35);animation:pop .18s ease-out}
@@ -411,7 +425,7 @@ function errMsg(e) {
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const rp = n => 'Rp' + (Number(n) || 0).toLocaleString('id-ID');
+const rp = n => { n = Number(n) || 0; return (n < 0 ? '−' : '') + 'Rp' + Math.abs(n).toLocaleString('id-ID'); };
 const pad = n => String(n).padStart(2, '0');
 const MONTHS = {
   en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -484,7 +498,7 @@ async function copyText(txt) {
 function printHtml(inner, title) {
   const css = $('style').outerHTML;
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(title || 'Cellentio')}</title><link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">${css}
-  <style>body{background:#fff}@page{size:A4;margin:12mm 0 16mm}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.rep-pg{padding-top:0;padding-bottom:0}.rep-foot{position:fixed;bottom:-10mm;left:46px;right:46px;margin:0;background:#fff}.rep-sec{break-inside:auto}.rep-sec h2{break-after:avoid}.rep-imgs img{break-inside:avoid;max-height:420px}}</style></head>
+  <style>body{background:#fff}@page{size:A4;margin:12mm 0 16mm}@media print{body *{visibility:visible!important}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.rep-pg{padding-top:0;padding-bottom:0}.rep-foot{break-inside:avoid;margin-top:24px}.rep-sec{break-inside:auto}.rep-sec h2{break-after:avoid}.rep-imgs img{break-inside:avoid;max-height:420px}}</style></head>
   <body>${inner}<script>(function(){var imgs=[].slice.call(document.images),n=imgs.length,done=0;function go(){setTimeout(function(){window.print()},400)}if(!n)return go();imgs.forEach(function(i){if(i.complete){if(++done===n)go()}else{i.onload=i.onerror=function(){if(++done===n)go()}}});setTimeout(go,8000)})()<\/script></body></html>`;
   const w = window.open('', '_blank');
   if (w) { w.document.open(); w.document.write(html); w.document.close(); }
@@ -531,7 +545,9 @@ const ICONS = {
   book: '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/>',
   link: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
   star: '<path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-2.9-5.4 2.9 1.1-6L3.2 9.4l6.1-.8z"/>',
-  avail: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="m16 19 2 2 4-4"/>'
+  avail: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="m16 19 2 2 4-4"/>',
+  lock: '<rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
 };
 const ic = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n] || ''}</svg>`;
 
@@ -551,10 +567,13 @@ const Mock = (() => {
     Students:     ['id', 'name', 'school', 'subject', 'grade', 'parentName', 'username', 'password', 'status', 'notes'],
     Zooms:        ['id', 'name', 'link', 'meetingId', 'passcode', 'status', 'notes'],
     Availability: ['id', 'tutorId', 'day', 'start', 'end'],
-    Lessons:      ['id', 'date', 'start', 'end', 'studentId', 'tutorId', 'subject', 'zoomId', 'status', 'notes', 'groupId'],
+    Lessons:      ['id', 'date', 'start', 'end', 'studentId', 'tutorId', 'subject', 'zoomId', 'status', 'notes', 'groupId', 'curriculum', 'fee', 'deduction', 'deductionNote'],
     Updates:      ['id', 'lessonId', 'date', 'studentId', 'tutorId', 'subject', 'learned', 'activities', 'strengths', 'improvements', 'attachments', 'created', 'updated'],
-    Invoices:     ['id', 'invoiceNo', 'studentId', 'date', 'dueDate', 'description', 'sessions', 'price', 'discount', 'total', 'status', 'paidDate', 'method', 'notes']
+    Invoices:     ['id', 'invoiceNo', 'studentId', 'date', 'dueDate', 'description', 'sessions', 'price', 'discount', 'total', 'status', 'paidDate', 'method', 'notes'],
+    Finance:      ['id', 'date', 'details', 'category', 'income', 'outcome', 'ref', 'created']
   };
+  const DEFAULT_FINANCE_PASS = 'Finance2026';
+  const FEE_FIELDS = ['fee', 'deduction', 'deductionNote'];
   const ADMIN_TABLES = ['Tutors', 'Students', 'Zooms', 'Availability', 'Lessons', 'Updates', 'Invoices'];
 
   const DEFAULT_SETTINGS = {
@@ -571,9 +590,10 @@ const Mock = (() => {
     lowBalance: '2',
     pwSuffix: '2026',
     portalUrl: '',
-    driveFolderId: ''
+    driveFolderId: '',
+    financePassHash: ''
   };
-  const PRIVATE_SETTINGS = ['driveFolderId'];
+  const PRIVATE_SETTINGS = ['driveFolderId', 'financePassHash'];
 
   /* ---------------- ROUTER ---------------- */
   function route_(req) {
@@ -595,6 +615,10 @@ const Mock = (() => {
         case 'saveSettings':  A.lock(() => saveSettings_(req.settings || {})); return { ok: true, settings: publicSettings_() };
         case 'account':       return account_(s, req);
         case 'upload':        return { ok: true, file: upload_(req) };
+        case 'financeList':   checkFin_(req); return { ok: true, rows: A.read('Finance') };
+        case 'financeSave':   checkFin_(req); return { ok: true, rows: A.lock(() => saveRows_('Finance', req.rows || [])) };
+        case 'financeRemove': checkFin_(req); A.lock(() => A.remove('Finance', req.id)); return { ok: true };
+        case 'financePass':   checkFin_(req); return financePass_(req);
         case 'setAvailability': return { ok: true, rows: A.lock(() => tutorSaveAvail_(String(req.tutorId), req.rows || [])) };
       }
     }
@@ -614,6 +638,19 @@ const Mock = (() => {
   }
 
   function checkTable_(t) { if (ADMIN_TABLES.indexOf(t) < 0) throw new Error('Unknown table: ' + t); }
+
+  /* ---------------- FINANCE (extra password) ---------------- */
+  function checkFin_(req) {
+    const h = getSettings_().financePassHash || A.hash(DEFAULT_FINANCE_PASS);
+    if (A.hash(String(req.finPass || '')) !== h) throw new Error('FIN_PASS');
+  }
+  function financePass_(req) {
+    const np = String(req.newPass || '');
+    if (np.length < 6) return { ok: false, error: 'PASS_SHORT' };
+    const cur = getSettings_(); cur.financePassHash = A.hash(np);
+    A.lock(() => A.saveSettings(cur));
+    return { ok: true };
+  }
 
   /* ---------------- AUTH ---------------- */
   function login_(req) {
@@ -712,7 +749,8 @@ const Mock = (() => {
         if (!full.date || !full.start || !full.end || !full.studentId || !full.tutorId) throw new Error('LESSON_INCOMPLETE');
         if (minutes_(full.end) <= minutes_(full.start)) throw new Error('LESSON_TIME');
         if (!full.status) full.status = 'Scheduled';
-        const c = lessonConflicts_(full, pool.concat(out));
+        const moved = !old || ['date', 'start', 'end', 'tutorId', 'studentId', 'zoomId', 'status'].some(k => String(old[k]) !== String(full[k]));
+        const c = moved ? lessonConflicts_(full, pool.concat(out)) : [];
         if (c.length) throw new Error('CONFLICT:' + full.date + ' ' + full.start + ':' + c.map(x => x.type).join(','));
       }
       if (t === 'Invoices') {
@@ -724,6 +762,10 @@ const Mock = (() => {
           pool.concat(out).forEach(x => { const m = String(x.invoiceNo).match(new RegExp('^INV-' + ym + '-(\\d+)$')); if (m && +m[1] > n) n = +m[1]; });
           full.invoiceNo = 'INV-' + ym + '-' + String(n + 1).padStart(3, '0');
         }
+      }
+      if (t === 'Finance') {
+        if (!full.date) full.date = A.today();
+        if (!full.created) full.created = A.nowISO();
       }
       if (t === 'Updates') {
         if (!full.created) full.created = A.nowISO();
@@ -821,7 +863,8 @@ const Mock = (() => {
     if (!st) throw new Error('Student not found');
     const tutors = A.read('Tutors');
     const tName = id => { const t = tutors.find(x => x.id === id); return t ? t.name : ''; };
-    const lessons = A.read('Lessons').filter(l => l.studentId === sid);
+    const lessons = A.read('Lessons').filter(l => l.studentId === sid)
+      .map(l => { const c = Object.assign({}, l); FEE_FIELDS.forEach(k => delete c[k]); return c; });   // tutor fee stays hidden from parents
     const invoices = A.read('Invoices').filter(i => i.studentId === sid && i.status !== 'Cancelled');
     const safe = Object.assign({}, st); delete safe.password; delete safe.notes;
     const usedTutors = {}; lessons.forEach(l => { usedTutors[l.tutorId] = 1; });
@@ -854,7 +897,7 @@ const Mock = (() => {
     if (data.length > 14000000) throw new Error('FILE_BIG');
     return A.upload(name, mime, data);
   }
-  const KEY = 'cel_demo_db_v1';
+  const KEY = 'cel_demo_db_v2';
   let mem = null;
   const sessions = store.get('cel_demo_sess') || {};
   const h = s => { let x = 5381; s = String(s); for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0; return 'h' + (x >>> 0).toString(16); };
@@ -905,6 +948,18 @@ const Mock = (() => {
     Lessons.sort((a, b) => (a.date + a.start).localeCompare(b.date + b.start));
     // most recent past lesson of Kevin stays "Scheduled" (needs confirmation)
     const kev = Lessons.filter(l => l.studentId === 'S003' && l.date < T).pop(); if (kev) kev.status = 'Scheduled';
+    // curriculum + tutor fee per lesson (fees differ per student / trial vs regular)
+    const CUR = { S001: 'IB Diploma', S002: 'Cambridge IGCSE', S003: 'Cambridge A Level', S004: 'National Curriculum', S005: 'IB Diploma', S006: 'Cambridge Lower Secondary' };
+    const FEE = { S001: 175000, S002: 125000, S003: 160000, S004: 100000, S005: 175000, S006: 110000 };
+    const firstOf = {};
+    Lessons.forEach(l => {
+      l.curriculum = CUR[l.studentId] || ''; l.deduction = ''; l.deductionNote = '';
+      const trial = !firstOf[l.studentId]; firstOf[l.studentId] = 1;
+      l.fee = String(trial ? 75000 : FEE[l.studentId] || 100000);
+      if (trial) l.notes = 'Trial lesson';
+    });
+    const ded = Lessons.filter(l => l.studentId === 'S003' && l.status === 'Completed')[1];
+    if (ded) { ded.deduction = '25000'; ded.deductionNote = 'Started 15 minutes late (not according to SOP)'; }
 
     const POOL = {
       Biology: {
@@ -962,6 +1017,19 @@ const Mock = (() => {
     inv('S006', addDays(mon, -30), 8, 'Paid'); inv('S006', addDays(mon, 1), 4, 'Unpaid');
     return {
       Tutors, Students, Zooms, Availability, Lessons, Updates, Invoices,
+      Finance: (() => {
+        const F = [], add = (date, details, category, income, outcome, ref) => F.push({ id: 'FI' + rid(), date, details, category, income: String(income || ''), outcome: String(outcome || ''), ref: ref || '', created: date + 'T09:00:00' });
+        const pm = addDays(mon, -35);
+        add(addDays(pm, 0), 'Opening balance', 'Capital', 15000000, 0);
+        Invoices.filter(i => i.status === 'Paid').forEach(i => add(i.paidDate, `Invoice ${i.invoiceNo} — ${Students.find(s => s.id === i.studentId).name}`, 'Tuition', i.total, 0, i.id));
+        add(addDays(pm, 3), 'Zoom Pro subscription (3 accounts)', 'Software', 0, 690000);
+        add(addDays(pm, 5), 'Office rent', 'Rent', 0, 2500000);
+        add(addDays(pm, 28), 'Tutor fees — Sophie', 'Tutor fee', 0, 1850000);
+        add(addDays(pm, 28), 'Tutor fees — Henry', 'Tutor fee', 0, 2240000);
+        add(addDays(pm, 28), 'Tutor fees — Clara', 'Tutor fee', 0, 1600000);
+        add(addDays(mon, -1), 'Instagram ads', 'Marketing', 0, 500000);
+        return F;
+      })(),
       Admins: [{ id: 'U1', email: 'admin@cellentio.com', passwordHash: h('Admin2026'), name: 'Admin' }],
       Settings: { portalUrl: 'https://cellentio-portal.example' }
     };
@@ -1024,7 +1092,7 @@ async function doLogin(e) {
 }
 function logout(expired) {
   if (S.token && !expired) call('logout', {}, { silent: true }).catch(() => {});
-  Object.assign(S, { token: null, role: null, db: {}, page: null, profile: null, redraw: null, notified: false });
+  Object.assign(S, { finPass: null, fin: null, token: null, role: null, db: {}, page: null, profile: null, redraw: null, notified: false });
   store.del('cel_session'); closeModal();
   renderLogin();
   if (expired) toast(t('e_session'), true);
@@ -1057,8 +1125,8 @@ async function init() {
    APP SHELL (same layout for Admin, Tutor & Client)
    ========================================================= */
 const NAVS = {
-  admin: [['menu', 'nav_menu', 'home'], ['home', 'nav_dashboard', 'grid'], ['schedule', 'nav_schedule', 'cal'], ['avail', 'nav_avail', 'avail'], ['students', 'nav_students', 'users'], ['tutors', 'nav_tutors', 'teacher'], ['sessions', 'nav_sessions', 'layers'], ['invoices', 'nav_invoices', 'wallet'], ['updates', 'nav_updates', 'report'], ['settings', 'nav_settings', 'settings']],
-  tutor: [['menu', 'nav_menu', 'home'], ['home', 'nav_today', 'grid'], ['schedule', 'nav_myschedule', 'cal'], ['updates', 'nav_updates', 'report'], ['avail', 'nav_myavail', 'avail']],
+  admin: [['menu', 'nav_menu', 'home'], ['home', 'nav_dashboard', 'grid'], ['schedule', 'nav_schedule', 'cal'], ['avail', 'nav_avail', 'avail'], ['students', 'nav_students', 'users'], ['tutors', 'nav_tutors', 'teacher'], ['sessions', 'nav_sessions', 'layers'], ['invoices', 'nav_invoices', 'wallet'], ['updates', 'nav_updates', 'report'], ['fees', 'nav_fees', 'money'], ['finance', 'nav_finance', 'chart'], ['settings', 'nav_settings', 'settings']],
+  tutor: [['menu', 'nav_menu', 'home'], ['home', 'nav_today', 'grid'], ['schedule', 'nav_myschedule', 'cal'], ['updates', 'nav_updates', 'report'], ['fees', 'nav_myfees', 'money'], ['avail', 'nav_myavail', 'avail']],
   client: [['menu', 'nav_menu', 'home'], ['home', 'nav_overview', 'grid'], ['schedule', 'nav_schedule', 'cal'], ['updates', 'nav_updates', 'report'], ['invoices', 'nav_invoices', 'wallet']]
 };
 function navCount(k) {
@@ -1218,6 +1286,8 @@ function lessonDetail(id) {
       ${S.role !== 'client' ? `<dt>${t('student')}</dt><dd>${esc(st.name)}${st.grade ? ` <span class="muted">· ${esc(gradeLabel(st.grade))}</span>` : ''}${st.school ? `<br><span class="small muted">${esc(st.school)}</span>` : ''}</dd>` : ''}
       ${S.role !== 'tutor' ? `<dt>${t('tutor')}</dt><dd>${esc(tutorOf(l.tutorId).name)}</dd>` : ''}
       <dt>${t('subject')}</dt><dd>${esc(l.subject)}</dd>
+      ${l.curriculum ? `<dt>${t('curriculum')}</dt><dd>${esc(l.curriculum)}</dd>` : ''}
+      ${S.role !== 'client' ? `<dt>${t('lesson_fee')}</dt><dd>${Number(l.fee) ? rp(l.fee) : `<span class="muted">${t('fee_unset')}</span>`}${Number(l.deduction) ? `<br><span style="color:var(--red)">− ${rp(l.deduction)} ${t('deduction_fee').toLowerCase()}</span>${l.deductionNote ? `<br><span class="small muted">${esc(l.deductionNote)}</span>` : ''}` : ''}${S.role === 'admin' ? ` <a href="javascript:void 0" class="small" onclick="feeForm('${l.id}')">${t('edit')}</a>` : ''}</dd>` : ''}
       <dt>Zoom</dt><dd>${z ? `${esc(z.name)}${z.meetingId ? `<br><span class="small muted">ID ${esc(z.meetingId)}${z.passcode ? ' · ' + t('passcode') + ' ' + esc(z.passcode) : ''}</span>` : ''}` : '<span class="muted">—</span>'}</dd>
       <dt>${t('status')}</dt><dd>${isLate(l) ? `<span class="badge b-yellow">${t('needs_confirm')}</span>` : stBadge(l.status)}</dd>
       ${l.notes ? `<dt>${t('notes')}</dt><dd>${esc(l.notes)}</dd>` : ''}
@@ -1249,14 +1319,15 @@ function subjectsList() {
   return Object.keys(set).sort();
 }
 function lessonForm(id, date, pre = {}) {
-  const l = id ? byId('Lessons', id) : Object.assign({ date: date || todayStr(), start: '16:00', end: hmOf(mins('16:00') + (Number(S.settings.lessonMinutes) || 60)), studentId: '', tutorId: '', subject: '', zoomId: 'auto', status: 'Scheduled', notes: '' }, pre);
+  const l = id ? byId('Lessons', id) : Object.assign({ date: date || todayStr(), start: '16:00', end: hmOf(mins('16:00') + (Number(S.settings.lessonMinutes) || 60)), studentId: '', tutorId: '', subject: '', curriculum: '', zoomId: 'auto', status: 'Scheduled', notes: '', fee: '', deduction: '', deductionNote: '' }, pre);
   if (!id && pre.start && !pre.end) l.end = hmOf(mins(pre.start) + (Number(S.settings.lessonMinutes) || 60));
   S.lfId = id || null;
   const opt = (arr, sel, ph) => `<option value="">${ph}</option>` + arr.map(x => `<option value="${x.id}" ${x.id === sel ? 'selected' : ''}>${esc(x.name)}</option>`).join('');
   modal(id ? t('edit_lesson') : t('add_lesson'), `<form id="fL" class="form-grid" oninput="lfCheck()" onchange="lfCheck()">
     <div class="field"><label>${t('student')} *</label><select class="input" name="studentId" required onchange="lfStudent(this.value)">${opt(id ? D('Students') : studentsActive(), l.studentId, t('choose'))}</select></div>
-    <div class="field"><label>${t('tutor')} *</label><select class="input" name="tutorId" required>${opt(id ? D('Tutors') : tutorsActive(), l.tutorId, t('choose'))}</select></div>
+    <div class="field"><label>${t('tutor')} *</label><select class="input" name="tutorId" required onchange="lfFee()">${opt(id ? D('Tutors') : tutorsActive(), l.tutorId, t('choose'))}</select></div>
     <div class="field"><label>${t('subject')}</label><input class="input" name="subject" list="subjList" value="${esc(l.subject)}"><datalist id="subjList">${subjectsList().map(s => `<option value="${esc(s)}">`).join('')}</datalist></div>
+    <div class="field"><label>${t('curriculum')}</label><input class="input" name="curriculum" list="curList" value="${esc(l.curriculum || '')}" placeholder="${t('curriculum_ph')}"><datalist id="curList">${curriculaList().map(s => `<option value="${esc(s)}">`).join('')}</datalist></div>
     <div class="field"><label>${t('date')} *</label><input class="input" type="date" name="date" value="${l.date}" required></div>
     <div class="field"><label>${t('start')} *</label><input class="input" type="time" name="start" value="${l.start}" required onchange="lfKeepDur()"></div>
     <div class="field"><label>${t('end')} *</label><input class="input" type="time" name="end" value="${l.end}" required></div>
@@ -1265,11 +1336,31 @@ function lessonForm(id, date, pre = {}) {
     ${id ? `<div class="field"><label>${t('status')}</label><select class="input" name="status">${['Scheduled', 'Completed', 'Cancelled'].map(s => `<option value="${s}" ${s === l.status ? 'selected' : ''}>${t('st_' + s.toLowerCase())}</option>`).join('')}</select></div>`
       : `<div class="field"><label>${t('repeat')}</label><select class="input" name="weeks">${[1, 2, 4, 6, 8, 10, 12, 16].map(n => `<option value="${n}">${n === 1 ? t('once') : t('n_weeks', n)}</option>`).join('')}</select></div>`}
     <div class="field full"><label>${t('notes')}</label><input class="input" name="notes" value="${esc(l.notes)}"></div>
+    <div class="full fee-box"><div class="fee-h">${ic('lock')}${t('fee_private')}</div><div class="form-grid">
+      <div class="field"><label>${t('lesson_fee')} (Rp)</label><input class="input" type="number" min="0" step="1000" name="fee" value="${esc(l.fee || '')}" placeholder="${t('fee_ph')}"><span class="hint" id="feeHint"></span></div>
+      <div class="field"><label>${t('deduction_fee')} (Rp)</label><input class="input" type="number" min="0" step="1000" name="deduction" value="${esc(l.deduction || '')}" placeholder="0"></div>
+      <div class="field full"><label>${t('deduction_note')}</label><input class="input" name="deductionNote" value="${esc(l.deductionNote || '')}" placeholder="${t('deduction_note_ph')}"></div>
+    </div></div>
     <div class="field full"><label>${t('check_title')}</label><div id="lfCheck" class="chk-list"></div></div>
   </form>`, `<button class="btn ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn" id="lfSave" onclick="saveLesson()">${ic('check')}${t('save')}</button>`);
   lfCheck();
 }
-function lfStudent(sid) { const f = $('#fL'); const s = studentOf(sid); if (s && s.subject && !f.subject.value) f.subject.value = s.subject.split(',')[0].trim(); }
+function lfStudent(sid) {
+  const f = $('#fL'); const s = studentOf(sid);
+  if (s && s.subject && !f.subject.value) f.subject.value = s.subject.split(',')[0].trim();
+  const prev = sortL(D('Lessons').filter(l => l.studentId === sid && l.curriculum)).pop();
+  if (prev && !f.curriculum.value) f.curriculum.value = prev.curriculum;
+  lfFee();
+}
+/** suggest the fee from the last lesson of the same tutor + student (fees are not fixed: trial / regular / per student) */
+function lfFee() {
+  const f = $('#fL'); if (!f || S.lfId) return;
+  const prev = sortL(D('Lessons').filter(l => l.studentId === f.studentId.value && l.tutorId === f.tutorId.value && Number(l.fee) > 0)).pop();
+  const h = $('#feeHint');
+  if (prev) { if (!f.fee.value) f.fee.value = prev.fee; if (h) h.textContent = t('fee_last', rp(prev.fee), fmtDate(prev.date)); }
+  else if (h) h.textContent = f.studentId.value && f.tutorId.value ? t('fee_first') : '';
+}
+function curriculaList() { const set = {}; D('Lessons').forEach(l => { const c = String(l.curriculum || '').trim(); if (c) set[c] = 1; }); return Object.keys(set).sort(); }
 function lfDur(m) { const f = $('#fL'); f.end.value = hmOf(mins(f.start.value) + m); lfCheck(); }
 function lfKeepDur() { /* keep current duration when start moves */ const f = $('#fL'); const d = mins(f.end.value) - mins(S.lfLastStart || f.start.value); if (S.lfLastStart && d > 0) f.end.value = hmOf(mins(f.start.value) + d); S.lfLastStart = f.start.value; lfCheck(); }
 function lfPlan() {
@@ -1279,7 +1370,7 @@ function lfPlan() {
   const groupId = !S.lfId && weeks > 1 ? 'G' + Date.now().toString(36) : (base.groupId || '');
   const plan = [], pool = D('Lessons').slice();
   for (let k = 0; k < weeks; k++) {
-    const row = Object.assign({}, base, { date: addDays(f.date, 7 * k), start: f.start, end: f.end, studentId: f.studentId, tutorId: f.tutorId, subject: f.subject, zoomId: f.zoomId, status: f.status || base.status || 'Scheduled', notes: f.notes, groupId });
+    const row = Object.assign({}, base, { date: addDays(f.date, 7 * k), start: f.start, end: f.end, studentId: f.studentId, tutorId: f.tutorId, subject: f.subject, curriculum: f.curriculum, zoomId: f.zoomId, status: f.status || base.status || 'Scheduled', notes: f.notes, groupId, fee: f.fee, deduction: f.deduction, deductionNote: f.deductionNote });
     if (!S.lfId) delete row.id;
     const msgs = []; let ok = !!(f.date && f.start && f.end && f.studentId && f.tutorId) && mins(f.end) > mins(f.start);
     if (row.zoomId === 'auto') { const z = freeZoom(row, pool); row.zoomId = z ? z.id : ''; if (z) msgs.push(['blue', `Zoom → ${esc(z.name)}`]); else if (zoomsActive().length) msgs.push(['yellow', t('no_free_zoom')]); }
@@ -1969,9 +2060,208 @@ function cInvoices() {
   <div class="card">${list.length ? list.map(i => `<div class="li click" onclick="viewInvoice('${i.id}')"><div class="avatar" style="background:${i.status === 'Paid' ? 'var(--green-50)' : 'var(--red-50)'};color:${i.status === 'Paid' ? 'var(--green)' : 'var(--red)'}">${ic('file').replace('<svg', '<svg style="width:15px;height:15px"')}</div><div class="meta"><b>${esc(i.invoiceNo)} · ${rp(i.total)}</b><span class="small muted">${fmtDate(i.date)} · ${esc(i.description)}${i.status === 'Unpaid' ? ' · ' + t('i_due') + ' ' + fmtDate(i.dueDate) : ''}</span></div>${stBadge(i.status)}<button class="icon-btn" onclick="event.stopPropagation();printHtml(invoiceHtml(byId('Invoices','${i.id}')),'${esc(i.invoiceNo)}')">${ic('download')}</button></div>`).join('') : `<div class="empty">${t('no_invoices')}</div>`}</div>`;
 }
 
+/* =========================================================
+   TUTOR FEES (admin: all tutors · tutor: own only — never shown to parents)
+   ========================================================= */
+const feeNet = l => (Number(l.fee) || 0) - (Number(l.deduction) || 0);
+function feeTotals(ls) { return { n: ls.length, fee: sum(ls, l => l.fee), ded: sum(ls, l => l.deduction), net: sum(ls, feeNet), unset: ls.filter(l => !(Number(l.fee) > 0)).length }; }
+function feeLessons(tid, per) { return sortL(D('Lessons').filter(l => l.tutorId === tid && l.status === 'Completed' && String(l.date).startsWith(per))); }
+function feesPage() {
+  const per = S.f.feePer || thisPeriod();
+  const admin = S.role === 'admin';
+  const tid = admin ? (S.f.feeTutor || '') : S.me.id;
+  let html = `<div class="row"><select class="input" style="max-width:210px" onchange="setF('feePer',this.value)">${monthOptions(per, 12, 0)}</select><div class="spacer"></div>
+    ${tid ? `<button class="btn ghost" onclick="printHtml(feeSlipHtml('${tid}','${per}'),'Tutor fee - ${esc(tutorOf(tid).name)} - ${per}')">${ic('download')}${t('download_pdf')}</button>` : ''}</div>
+    <div class="alert blue">${ic('lock')}<div>${admin ? t('fees_info_admin') : t('fees_info_tutor')}</div></div>`;
+  if (admin) {
+    const rows = D('Tutors').filter(x => x.status !== 'Inactive' || feeLessons(x.id, per).length).sort((a, b) => a.name.localeCompare(b.name)).map(x => ({ x, s: feeTotals(feeLessons(x.id, per)) }));
+    const all = feeTotals(D('Lessons').filter(l => l.status === 'Completed' && String(l.date).startsWith(per)));
+    html += `<div class="grid g3">
+      <div class="stat"><span class="lbl">${t('lesson_fee')}</span><span class="val num">${rp(all.fee)}</span><span class="sub">${t('n_lessons', all.n)} · ${fmtPeriod(per)}</span></div>
+      <div class="stat" style="--c:var(--red)"><span class="lbl">${t('deduction_fee')}</span><span class="val num" style="color:var(--red)">${rp(all.ded)}</span><span class="sub">${fmtPeriod(per)}</span></div>
+      <div class="stat" style="--c:var(--green)"><span class="lbl">${t('net_payroll')}</span><span class="val num">${rp(all.net)}</span><span class="sub">${all.unset ? `<span style="color:var(--red);font-weight:700">${t('n_fee_unset', all.unset)}</span>` : t('all_fee_set')}</span></div>
+    </div>
+    <div class="card"><div class="card-head"><h3>${t('payroll')} · ${fmtPeriod(per)}</h3></div><div class="table-wrap"><table class="t"><thead><tr><th>${t('tutor')}</th><th class="c">${t('lessons_done')}</th><th class="r">${t('lesson_fee')}</th><th class="r">${t('deduction_fee')}</th><th class="r">${t('net')}</th><th></th></tr></thead><tbody>
+      ${rows.map(({ x, s }) => `<tr class="${tid === x.id ? 'sumrow' : ''}"><td><a href="javascript:void 0" onclick="setF('feeTutor','${x.id}')"><b>${esc(x.name)}</b></a>${s.unset ? `<div class="small" style="color:var(--red);font-weight:700">${t('n_fee_unset', s.unset)}</div>` : ''}</td><td class="c num">${s.n}</td><td class="r num">${rp(s.fee)}</td><td class="r num" style="color:${s.ded ? 'var(--red)' : 'inherit'}">${s.ded ? '− ' + rp(s.ded) : '—'}</td><td class="r num"><b>${rp(s.net)}</b></td>
+        <td class="acts"><button class="btn sm soft" onclick="setF('feeTutor','${x.id}')">${t('detail')}</button><button class="icon-btn" title="${t('download_pdf')}" onclick="printHtml(feeSlipHtml('${x.id}','${per}'),'Tutor fee - ${esc(x.name)} - ${per}')">${ic('download')}</button></td></tr>`).join('') || `<tr><td colspan="6"><div class="empty">${t('no_tutors')}</div></td></tr>`}
+    </tbody></table></div></div>`;
+  }
+  if (tid) {
+    const ls = feeLessons(tid, per), s = feeTotals(ls);
+    if (!admin) html += `<div class="grid g3">
+      <div class="stat"><span class="lbl">${t('lesson_fee')}</span><span class="val num">${rp(s.fee)}</span><span class="sub">${t('n_lessons', s.n)}</span></div>
+      <div class="stat" style="--c:var(--red)"><span class="lbl">${t('deduction_fee')}</span><span class="val num" style="color:var(--red)">${rp(s.ded)}</span><span class="sub">${fmtPeriod(per)}</span></div>
+      <div class="stat" style="--c:var(--green)"><span class="lbl">${t('net')}</span><span class="val num">${rp(s.net)}</span><span class="sub">${fmtPeriod(per)}</span></div></div>`;
+    html += `<div class="card"><div class="card-head"><h3>${esc(tutorOf(tid).name)} · ${fmtPeriod(per)}</h3>${admin ? `<div class="spacer"></div><button class="icon-btn" title="${t('cancel')}" onclick="setF('feeTutor','')">${ic('x')}</button>` : ''}</div>
+      <div class="table-wrap"><table class="t"><thead><tr><th>${t('date')}</th><th>${t('student')}</th><th>${t('subject')}</th><th class="r">${t('lesson_fee')}</th><th>${t('deduction_fee')}</th><th class="r">${t('net')}</th>${admin ? '<th></th>' : ''}</tr></thead><tbody>
+      ${ls.map(l => `<tr class="${Number(l.fee) > 0 ? '' : 'warn'}"><td class="nowrap">${fmtDay(l.date)}<div class="small muted">${timeRange(l)}</div></td><td>${esc(studentOf(l.studentId).name)}</td><td>${esc(l.subject)}${l.curriculum ? `<div class="small muted">${esc(l.curriculum)}</div>` : ''}${l.notes ? `<div class="small muted">${esc(l.notes)}</div>` : ''}</td>
+        <td class="r num">${Number(l.fee) > 0 ? rp(l.fee) : `<span class="badge b-red">${t('fee_unset')}</span>`}</td>
+        <td>${Number(l.deduction) ? `<span style="color:var(--red);font-weight:700">− ${rp(l.deduction)}</span>${l.deductionNote ? `<div class="small muted">${esc(l.deductionNote)}</div>` : ''}` : '<span class="muted">—</span>'}</td>
+        <td class="r num"><b>${rp(feeNet(l))}</b></td>${admin ? `<td class="acts"><button class="icon-btn" onclick="feeForm('${l.id}')">${ic('edit')}</button></td>` : ''}</tr>`).join('') || `<tr><td colspan="7"><div class="empty">${t('no_fee_lessons')}</div></td></tr>`}
+      ${ls.length ? `<tr class="sumrow"><td colspan="3">TOTAL · ${t('n_lessons', s.n)}</td><td class="r num">${rp(s.fee)}</td><td class="num" style="color:var(--red)">${s.ded ? '− ' + rp(s.ded) : '—'}</td><td class="r num">${rp(s.net)}</td>${admin ? '<td></td>' : ''}</tr>` : ''}
+      </tbody></table></div></div>`;
+  }
+  return html;
+}
+function feeForm(id) {
+  const l = byId('Lessons', id);
+  modal(`${t('lesson_fee')} · ${esc(studentOf(l.studentId).name)} <span class="muted small">· ${fmtDay(l.date)}</span>`, `<p class="small muted" style="margin-bottom:12px">${esc(tutorOf(l.tutorId).name)} · ${esc(l.subject)} · ${timeRange(l)}</p><form id="fFee" class="form-grid">
+    <div class="field"><label>${t('lesson_fee')} (Rp)</label><input class="input" type="number" min="0" step="1000" name="fee" value="${esc(l.fee || '')}"></div>
+    <div class="field"><label>${t('deduction_fee')} (Rp)</label><input class="input" type="number" min="0" step="1000" name="deduction" value="${esc(l.deduction || '')}" placeholder="0"></div>
+    <div class="field full"><label>${t('deduction_note')}</label><input class="input" name="deductionNote" value="${esc(l.deductionNote || '')}" placeholder="${t('deduction_note_ph')}"></div></form>`,
+    `<button class="btn ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="saveFee('${id}')">${ic('check')}${t('save')}</button>`);
+}
+async function saveFee(id) {
+  const f = formData($('#fFee'));
+  try { await saveRow('Lessons', Object.assign({}, byId('Lessons', id), f)); closeModal(); toast(t('saved')); renderShell(); } catch (e) { toast(e.message, true); }
+}
+function feeSlipHtml(tid, per) {
+  const tu = tutorOf(tid), ls = feeLessons(tid, per), s = feeTotals(ls);
+  return `<div class="rep inv-doc"><div class="rep-pg">
+    <img class="rep-logo" src="${LOGO_FULL}" alt="Cellentio"><div class="rep-rule"></div>
+    <h1>${t('fee_slip_title')}</h1><div class="sub">${esc(S.settings.centerName || 'Cellentio Tutoring Center')}</div>
+    <div class="rep-info"><div><small>${t('r_tutor')}</small><b>${esc(tu.name)}</b></div><div><small>${t('period')}</small><b>${fmtPeriod(per)}</b></div>
+      <div><small>${t('lessons_done')}</small><b>${s.n}</b></div><div><small>${t('net')}</small><b>${rp(s.net)}</b></div></div>
+    <table class="inv-tbl"><thead><tr><th>${t('date').toUpperCase()}</th><th>${t('student').toUpperCase()}</th><th>${t('subject').toUpperCase()}</th><th class="r">FEE</th><th class="r">${t('deduction_fee').toUpperCase()}</th><th class="r">${t('net').toUpperCase()}</th></tr></thead><tbody>
+      ${ls.map(l => `<tr><td>${fmtDate(l.date)}</td><td>${esc(studentOf(l.studentId).name)}</td><td>${esc(l.subject)}</td><td class="r">${rp(l.fee)}</td><td class="r">${Number(l.deduction) ? '− ' + rp(l.deduction) : '-'}</td><td class="r">${rp(feeNet(l))}</td></tr>`).join('')}
+      <tr class="inv-tot"><td colspan="3">TOTAL</td><td class="r">${rp(s.fee)}</td><td class="r">${s.ded ? '− ' + rp(s.ded) : '-'}</td><td class="r">${rp(s.net)}</td></tr>
+    </tbody></table>
+    ${ls.some(l => Number(l.deduction)) ? `<div class="rep-sec"><h2>${t('deduction_notes').toUpperCase()}</h2><ul>${ls.filter(l => Number(l.deduction)).map(l => `<li>${fmtDate(l.date)} · ${esc(studentOf(l.studentId).name)} — ${rp(l.deduction)}${l.deductionNote ? ': ' + esc(l.deductionNote) : ''}</li>`).join('')}</ul></div>` : ''}
+    ${repFoot()}</div></div>`;
+}
+
+/* =========================================================
+   FINANCE (admin, extra password — checked by the server on every call)
+   ========================================================= */
+async function finCall(action, payload = {}) {
+  try { return await call(action, Object.assign({ finPass: S.finPass }, payload)); }
+  catch (e) { if (e.message === t('e_fin_pass') && action !== 'financeList') { S.finPass = null; S.fin = null; renderPage(); } throw e; }
+}
+async function finUnlock(e) {
+  e.preventDefault();
+  const pw = $('#finPw').value;
+  try { const r = await call('financeList', { finPass: pw }); S.finPass = pw; S.fin = r.rows; renderPage(); }
+  catch (err) { toast(err.message, true); }
+}
+function finLock() { S.finPass = null; S.fin = null; go('home'); toast(t('fin_locked')); }
+const finAmt = r => (Number(r.income) || 0) - (Number(r.outcome) || 0);
+const finSort = rows => rows.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)) || String(a.created).localeCompare(String(b.created)));
+function aFinance() {
+  if (!S.finPass || !S.fin) return `<div class="card lockcard"><div class="ic">${ic('lock')}</div><h3>${t('fin_locked_title')}</h3><p class="small muted" style="margin-bottom:14px">${t('fin_locked_sub')}</p>
+    <form onsubmit="finUnlock(event)" style="display:flex;flex-direction:column;gap:10px"><input class="input" type="password" id="finPw" placeholder="${t('fin_pass')}" autocomplete="off" required><button class="btn">${ic('lock')}${t('unlock')}</button></form>
+    ${DEMO ? `<p class="small muted" style="margin-top:12px">Demo: <b>Finance2026</b></p>` : ''}</div>`;
+  const per = S.f.finPer === undefined ? thisPeriod() : S.f.finPer, cat = S.f.finCat || '', q = (S.f.finQ || '').toLowerCase();
+  const all = finSort(S.fin);
+  let bal = 0; const balOf = {}; all.forEach(r => { bal += finAmt(r); balOf[r.id] = bal; });
+  const opening = per ? sum(all.filter(r => String(r.date) < per + '-01'), finAmt) : 0;
+  const inPer = all.filter(r => !per || String(r.date).startsWith(per));
+  const shown = inPer.filter(r => (!cat || r.category === cat) && (!q || [r.details, r.category].join(' ').toLowerCase().includes(q)));
+  const filtered = cat || q;
+  const inc = sum(shown, r => r.income), out = sum(shown, r => r.outcome);
+  const endBal = opening + sum(inPer, finAmt);
+  const cats = [...new Set(all.map(r => r.category).filter(Boolean))].sort();
+  return `<div class="row"><select class="input" style="max-width:200px" onchange="setF('finPer',this.value)"><option value="" ${per === '' ? 'selected' : ''}>${t('all_months')}</option>${monthOptions(per, 24, 0)}</select>
+      <select class="input" style="max-width:180px" onchange="setF('finCat',this.value)"><option value="">${t('all_categories')}</option>${cats.map(c => `<option ${c === cat ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>
+      <div class="search">${ic('search')}<input class="input" placeholder="${t('search')}" value="${esc(S.f.finQ || '')}" onchange="setF('finQ',this.value)"></div>
+      <div class="spacer"></div><button class="btn sm ghost" onclick="finPassForm()">${ic('key')}${t('fin_change_pass')}</button><button class="btn sm ghost" onclick="finLock()">${ic('lock')}${t('lock')}</button></div>
+    <div class="grid g4">
+      <div class="stat" style="--c:var(--green)"><span class="lbl">${t('income')}</span><span class="val num" style="color:var(--green)">${rp(inc)}</span><span class="sub">${per ? fmtPeriod(per) : t('all_months')}</span></div>
+      <div class="stat" style="--c:var(--red)"><span class="lbl">${t('outcome')}</span><span class="val num" style="color:var(--red)">${rp(out)}</span><span class="sub">${per ? fmtPeriod(per) : t('all_months')}</span></div>
+      <div class="stat" style="--c:var(--violet)"><span class="lbl">${t('net_period')}</span><span class="val num">${rp(inc - out)}</span><span class="sub">${t('income')} − ${t('outcome')}</span></div>
+      <div class="stat" style="--c:var(--blue)"><span class="lbl">${t('balance')}</span><span class="val num">${rp(endBal)}</span><span class="sub">${per ? t('end_of', fmtPeriod(per)) : t('current')}</span></div>
+    </div>
+    <div class="row"><button class="btn green" onclick="finForm(null,'income')">${ic('plus')}${t('add_income')}</button><button class="btn red" onclick="finForm(null,'outcome')">${ic('plus')}${t('add_outcome')}</button>
+      <button class="btn ghost" onclick="finFromInvoices()">${ic('wallet')}${t('from_invoices')}</button><button class="btn ghost" onclick="finFromFees()">${ic('money')}${t('from_fees')}</button>
+      <div class="spacer"></div><button class="btn sm ghost" onclick="finCsv()">${ic('download')}Excel (CSV)</button><button class="btn sm ghost" onclick="finPrint()">${ic('print')}${t('print')}</button></div>
+    <div class="card"><div class="table-wrap"><table class="t"><thead><tr><th>${t('date')}</th><th>${t('details')}</th><th>${t('category')}</th><th class="r">${t('income')}</th><th class="r">${t('outcome')}</th>${filtered ? '' : `<th class="r">${t('balance')}</th>`}<th></th></tr></thead><tbody>
+      ${per && !filtered ? `<tr class="openrow"><td>${fmtDate(per + '-01')}</td><td colspan="4">${t('opening_balance')}</td><td class="r num">${rp(opening)}</td><td></td></tr>` : ''}
+      ${shown.map(r => `<tr><td class="nowrap">${fmtDate(r.date)}</td><td>${esc(r.details)}</td><td>${r.category ? `<span class="badge b-gray">${esc(r.category)}</span>` : ''}</td><td class="r num in">${Number(r.income) ? rp(r.income) : ''}</td><td class="r num out">${Number(r.outcome) ? rp(r.outcome) : ''}</td>${filtered ? '' : `<td class="r num">${rp(balOf[r.id])}</td>`}
+        <td class="acts"><button class="icon-btn" onclick="finForm('${r.id}')">${ic('edit')}</button><button class="icon-btn" onclick="finDel('${r.id}')">${ic('trash')}</button></td></tr>`).join('') || `<tr><td colspan="7"><div class="empty">${t('no_records')}</div></td></tr>`}
+      <tr class="sumrow"><td colspan="3">SUM · ${shown.length} ${t('records')}</td><td class="r num" style="color:var(--green)">${rp(inc)}</td><td class="r num" style="color:var(--red)">${rp(out)}</td>${filtered ? '' : `<td class="r num">${rp(endBal)}</td>`}<td></td></tr>
+    </tbody></table></div></div>`;
+}
+function finForm(id, type) {
+  const r = id ? S.fin.find(x => x.id === id) : { date: todayStr(), details: '', category: '', income: '', outcome: '' };
+  const ty = id ? (Number(r.income) ? 'income' : 'outcome') : type;
+  const cats = [...new Set(S.fin.map(x => x.category).filter(Boolean).concat(['Tuition', 'Tutor fee', 'Rent', 'Software', 'Marketing', 'Operational']))].sort();
+  modal(id ? t('edit_record') : (ty === 'income' ? t('add_income') : t('add_outcome')), `<form id="fFin" class="form-grid">
+    <div class="field"><label>${t('date')} *</label><input class="input" type="date" name="date" value="${esc(r.date)}" required></div>
+    <div class="field"><label>${t('type')}</label><select class="input" name="type"><option value="income" ${ty === 'income' ? 'selected' : ''}>${t('income')}</option><option value="outcome" ${ty === 'outcome' ? 'selected' : ''}>${t('outcome')}</option></select></div>
+    <div class="field full"><label>${t('details')} *</label><input class="input" name="details" value="${esc(r.details)}" required placeholder="${t('details_ph')}"></div>
+    <div class="field"><label>${t('amount')} (Rp) *</label><input class="input" type="number" min="0" step="1000" name="amount" value="${esc(Number(r.income) || Number(r.outcome) || '')}" required></div>
+    <div class="field"><label>${t('category')}</label><input class="input" name="category" list="finCats" value="${esc(r.category)}"><datalist id="finCats">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist></div>
+  </form>`, `<button class="btn ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="finSave('${id || ''}')">${ic('check')}${t('save')}</button>`);
+}
+async function finSave(id) {
+  const form = $('#fFin'); if (!form.reportValidity()) return;
+  const f = formData(form);
+  const row = Object.assign(id ? S.fin.find(x => x.id === id) : {}, { date: f.date, details: f.details, category: f.category, income: f.type === 'income' ? f.amount : '', outcome: f.type === 'outcome' ? f.amount : '' });
+  try { const r = await finCall('financeSave', { rows: [row] }); finMerge(r.rows); closeModal(); toast(t('saved')); renderPage(); } catch (e) { toast(e.message, true); }
+}
+function finMerge(rows) { rows.forEach(r => { const i = S.fin.findIndex(x => x.id === r.id); i > -1 ? S.fin[i] = r : S.fin.push(r); }); }
+function finDel(id) {
+  const r = S.fin.find(x => x.id === id);
+  confirmBox(t('del_q', esc(r.details)), async () => { try { await finCall('financeRemove', { id }); S.fin = S.fin.filter(x => x.id !== id); toast(t('deleted')); renderPage(); } catch (e) { toast(e.message, true); } });
+}
+function finFromInvoices() {
+  const done = new Set(S.fin.map(r => r.ref).filter(Boolean));
+  const list = D('Invoices').filter(i => i.status === 'Paid' && !done.has(i.id)).sort((a, b) => String(a.paidDate).localeCompare(String(b.paidDate)));
+  S.finImport = list.map(i => ({ date: i.paidDate || i.date, details: `Invoice ${i.invoiceNo} — ${studentOf(i.studentId).name}`, category: 'Tuition', income: i.total, outcome: '', ref: i.id }));
+  modal(t('from_invoices'), list.length ? `<p class="small muted" style="margin-bottom:10px">${t('from_invoices_sub')}</p>${S.finImport.map((r, i) => `<label class="li" style="cursor:pointer"><input type="checkbox" class="fimp" data-i="${i}" checked style="width:17px;height:17px;accent-color:var(--blue)"><div class="meta"><b>${esc(r.details)}</b><span class="small muted">${fmtDate(r.date)}</span></div><b class="num" style="color:var(--green)">${rp(r.income)}</b></label>`).join('')}` : `<div class="empty">${t('nothing_import')}</div>`,
+    list.length ? `<button class="btn ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn green" onclick="finImport()">${ic('check')}${t('record')}</button>` : '');
+}
+function finFromFees() {
+  const per = S.f.finFeePer || (S.f.finPer || addMonths(thisPeriod(), -1));
+  const done = new Set(S.fin.map(r => r.ref).filter(Boolean));
+  const last = addDays(addMonths(per, 1) + '-01', -1);
+  S.finImport = D('Tutors').map(x => ({ x, s: feeTotals(feeLessons(x.id, per)) })).filter(o => o.s.n && !done.has(`FEE-${o.x.id}-${per}`))
+    .map(o => ({ date: last < todayStr() ? last : todayStr(), details: `Tutor fee — ${o.x.name} — ${fmtPeriod(per)}`, category: 'Tutor fee', income: '', outcome: String(o.s.net), ref: `FEE-${o.x.id}-${per}` }));
+  modal(t('from_fees'), `<div class="row" style="margin-bottom:10px"><select class="input" style="max-width:220px" onchange="S.f.finFeePer=this.value;finFromFees()">${monthOptions(per, 12, 0)}</select></div>
+    ${S.finImport.length ? `<p class="small muted" style="margin-bottom:10px">${t('from_fees_sub')}</p>${S.finImport.map((r, i) => `<label class="li" style="cursor:pointer"><input type="checkbox" class="fimp" data-i="${i}" checked style="width:17px;height:17px;accent-color:var(--blue)"><div class="meta"><b>${esc(r.details)}</b><span class="small muted">${fmtDate(r.date)}</span></div><b class="num" style="color:var(--red)">${rp(r.outcome)}</b></label>`).join('')}` : `<div class="empty">${t('nothing_import')}</div>`}`,
+    S.finImport.length ? `<button class="btn ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn red" onclick="finImport()">${ic('check')}${t('record')}</button>` : '');
+}
+async function finImport() {
+  const rows = $$('.fimp').filter(c => c.checked).map(c => S.finImport[+c.dataset.i]);
+  if (!rows.length) return closeModal();
+  try { const r = await finCall('financeSave', { rows }); finMerge(r.rows); closeModal(); toast(t('n_recorded', rows.length)); renderPage(); } catch (e) { toast(e.message, true); }
+}
+function finPassForm() {
+  modal(t('fin_change_pass'), `<form id="fFP" class="form-grid"><div class="field full"><label>${t('new_pass')}</label><input class="input" type="password" name="a" required minlength="6" autocomplete="new-password"></div>
+    <div class="field full"><label>${t('repeat_pass')}</label><input class="input" type="password" name="b" required autocomplete="new-password"></div><p class="full small muted">${t('fin_pass_hint')}</p></form>`,
+    `<button class="btn ghost" onclick="closeModal()">${t('cancel')}</button><button class="btn" onclick="finPassSave()">${t('save')}</button>`);
+}
+async function finPassSave() {
+  const f = formData($('#fFP'));
+  if (f.a.length < 6) return toast(t('e_pass_short'), true);
+  if (f.a !== f.b) return toast(t('e_pass_match'), true);
+  try { await finCall('financePass', { newPass: f.a }); S.finPass = f.a; closeModal(); toast(t('saved')); } catch (e) { toast(e.message, true); }
+}
+function finShown() {
+  const per = S.f.finPer === undefined ? thisPeriod() : S.f.finPer;
+  return { per, rows: finSort(S.fin).filter(r => !per || String(r.date).startsWith(per)) };
+}
+function finCsv() {
+  const { per, rows } = finShown();
+  const all = finSort(S.fin); let bal = 0; const balOf = {}; all.forEach(r => { bal += finAmt(r); balOf[r.id] = bal; });
+  const q = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+  const csv = [['Date', 'Details', 'Category', 'Income', 'Outcome', 'Balance'].map(q).join(',')].concat(rows.map(r => [r.date, r.details, r.category, Number(r.income) || '', Number(r.outcome) || '', balOf[r.id]].map(q).join(','))).join('\r\n');
+  try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = `Cellentio-finance-${per || 'all'}.csv`; document.body.appendChild(a); a.click(); a.remove(); }
+  catch (e) { copyText(csv); }
+}
+function finPrint() {
+  const { per, rows } = finShown();
+  const opening = per ? sum(S.fin.filter(r => String(r.date) < per + '-01'), finAmt) : 0;
+  let bal = opening; const inc = sum(rows, r => r.income), out = sum(rows, r => r.outcome);
+  printHtml(`<div class="rep inv-doc"><div class="rep-pg"><img class="rep-logo" src="${LOGO_FULL}" alt=""><div class="rep-rule"></div><h1>${t('fin_report')}</h1><div class="sub">${per ? fmtPeriod(per) : t('all_months')}</div>
+    <table class="inv-tbl"><thead><tr><th>${t('date').toUpperCase()}</th><th>${t('details').toUpperCase()}</th><th class="r">${t('income').toUpperCase()}</th><th class="r">${t('outcome').toUpperCase()}</th><th class="r">${t('balance').toUpperCase()}</th></tr></thead><tbody>
+    ${per ? `<tr><td></td><td><i>${t('opening_balance')}</i></td><td></td><td></td><td class="r">${rp(opening)}</td></tr>` : ''}
+    ${rows.map(r => { bal += finAmt(r); return `<tr><td>${fmtDate(r.date)}</td><td>${esc(r.details)}${r.category ? ` <span style="color:#8A90B2">· ${esc(r.category)}</span>` : ''}</td><td class="r">${Number(r.income) ? rp(r.income) : ''}</td><td class="r">${Number(r.outcome) ? rp(r.outcome) : ''}</td><td class="r">${rp(bal)}</td></tr>`; }).join('')}
+    <tr class="inv-tot"><td colspan="2">SUM</td><td class="r">${rp(inc)}</td><td class="r">${rp(out)}</td><td class="r">${rp(bal)}</td></tr></tbody></table>${repFoot()}</div></div>`, `Finance ${per || 'all'}`);
+}
+
 const PAGES = {
-  admin: { menu: pgMenu, home: aDash, schedule: aSchedule, avail: aAvail, students: aStudents, tutors: aTutors, sessions: aSessions, invoices: aInvoices, updates: aUpdates, settings: aSettings },
-  tutor: { menu: pgMenu, home: tHome, schedule: tSchedule, updates: tUpdates, avail: tAvail },
+  admin: { menu: pgMenu, home: aDash, schedule: aSchedule, avail: aAvail, students: aStudents, tutors: aTutors, sessions: aSessions, invoices: aInvoices, updates: aUpdates, fees: feesPage, finance: aFinance, settings: aSettings },
+  tutor: { menu: pgMenu, home: tHome, schedule: tSchedule, updates: tUpdates, fees: feesPage, avail: tAvail },
   client: { menu: pgMenu, home: cHome, schedule: cSchedule, updates: cUpdates, invoices: cInvoices }
 };
 
@@ -2133,7 +2423,35 @@ const L = {
   e_name_required: ['Name is required', 'Nama wajib diisi'], e_username: ['User ID "{0}" is already used', 'User ID "{0}" sudah dipakai'],
   e_lesson_incomplete: ['Complete the lesson data first', 'Lengkapi data jadwal'], e_lesson_time: ['End time must be after start time', 'Jam selesai harus setelah jam mulai'],
   e_conflict: ['Schedule clash on {0}', 'Jadwal bentrok pada {0}'], e_all_conflict: ['All dates clash — nothing saved', 'Semua tanggal bentrok — tidak ada yang disimpan'],
-  e_invoice_student: ['Choose a student', 'Pilih siswa'], e_file_big: ['File is too large (max 10 MB)', 'File terlalu besar (maks 10 MB)']
+  e_invoice_student: ['Choose a student', 'Pilih siswa'], e_file_big: ['File is too large (max 10 MB)', 'File terlalu besar (maks 10 MB)'],
+  // tutor fee, curriculum, finance
+  nav_fees: ['Tutor Fees', 'Fee Tutor'], nav_myfees: ['My Fees', 'Fee Saya'], nav_finance: ['Finance', 'Keuangan'],
+  curriculum: ['Curriculum', 'Kurikulum'], curriculum_ph: ['e.g. IB, Cambridge IGCSE — type a new one', 'mis. IB, Cambridge IGCSE — ketik baru'],
+  fee_private: ['Tutor fee — only visible to admin & the tutor', 'Fee tutor — hanya terlihat oleh admin & tutor'],
+  lesson_fee: ['Lesson fee', 'Lesson fee'], deduction_fee: ['Deduction fee', 'Deduction fee'], deduction_note: ['Deduction reason', 'Alasan potongan'],
+  deduction_note_ph: ['e.g. started 15 min late (not according to SOP)', 'mis. telat mulai 15 menit (tidak sesuai SOP)'],
+  fee_ph: ['e.g. 150000', 'mis. 150000'], fee_last: ['Last fee for this tutor & student: {0} ({1})', 'Fee terakhir tutor & siswa ini: {0} ({1})'],
+  fee_first: ['First lesson for this tutor & student — fill in manually (e.g. trial fee)', 'Les pertama tutor & siswa ini — isi manual (mis. fee trial)'],
+  fee_unset: ['Fee not set', 'Fee belum diisi'], n_fee_unset: ['{0} lessons without fee', '{0} les belum ada fee'], all_fee_set: ['All fees filled in', 'Semua fee sudah diisi'],
+  net: ['Net', 'Bersih'], net_payroll: ['Net payroll', 'Total dibayar'], payroll: ['Payroll', 'Payroll'], lessons_done: ['Lessons', 'Jumlah les'], period: ['PERIOD', 'PERIODE'],
+  no_fee_lessons: ['No completed lessons in this month', 'Belum ada les selesai di bulan ini'], deduction_notes: ['Deduction notes', 'Catatan potongan'],
+  fee_slip_title: ['TUTOR FEE STATEMENT', 'RINCIAN FEE TUTOR'],
+  fees_info_admin: ['Fees count lessons marked <b>Completed</b> in the month. Fees are not fixed — set them per lesson (trial / regular / per student) when adding a lesson, or edit them here. Parents never see fees.', 'Fee dihitung dari les berstatus <b>Selesai</b> di bulan itu. Fee tidak tetap — diisi per les (trial / reguler / per siswa) saat tambah jadwal, atau ubah di sini. Orang tua tidak bisa melihat fee.'],
+  fees_info_tutor: ['Your fee per completed lesson this month, including any deduction (lesson not conducted according to SOP). Only you and the admin can see this.', 'Fee Anda per les yang selesai bulan ini, termasuk potongan (les tidak sesuai SOP). Hanya Anda dan admin yang bisa melihat.'],
+  fin_locked_title: ['Finance is locked', 'Keuangan terkunci'], fin_locked_sub: ['Enter the finance password to open this page.', 'Masukkan password keuangan untuk membuka halaman ini.'],
+  fin_pass: ['Finance password', 'Password keuangan'], unlock: ['Unlock', 'Buka'], lock: ['Lock', 'Kunci'], fin_locked: ['Finance locked', 'Keuangan dikunci'],
+  fin_change_pass: ['Change password', 'Ganti password'], repeat_pass: ['Repeat new password', 'Ulangi password baru'],
+  fin_pass_hint: ['This password is separate from the admin login. Share it only with people allowed to see finance.', 'Password ini terpisah dari login admin. Bagikan hanya ke orang yang boleh melihat keuangan.'],
+  e_fin_pass: ['Finance password is incorrect', 'Password keuangan salah'], e_pass_match: ['Passwords do not match', 'Password tidak sama'],
+  income: ['Income', 'Pemasukan'], outcome: ['Outcome', 'Pengeluaran'], balance: ['Balance', 'Saldo'], net_period: ['Net (period)', 'Selisih (periode)'],
+  end_of: ['end of {0}', 'akhir {0}'], current: ['current', 'saat ini'], opening_balance: ['Opening balance', 'Saldo awal'],
+  add_income: ['Income', 'Pemasukan'], add_outcome: ['Outcome', 'Pengeluaran'], edit_record: ['Edit record', 'Ubah catatan'],
+  from_invoices: ['From paid invoices', 'Dari invoice lunas'], from_fees: ['From tutor fees', 'Dari fee tutor'],
+  from_invoices_sub: ['Paid invoices not recorded yet — tick the ones to add as income.', 'Invoice lunas yang belum dicatat — centang untuk dicatat sebagai pemasukan.'],
+  from_fees_sub: ['Net tutor fees for this month — tick the ones to add as outcome.', 'Fee bersih tutor bulan ini — centang untuk dicatat sebagai pengeluaran.'],
+  nothing_import: ['Nothing new to record', 'Tidak ada yang perlu dicatat'], record: ['Record', 'Catat'], n_recorded: ['{0} records added', '{0} catatan ditambahkan'],
+  details: ['Details', 'Keterangan'], details_ph: ['e.g. Office rent November', 'mis. Sewa kantor November'], category: ['Category', 'Kategori'], all_categories: ['All categories', 'Semua kategori'],
+  type: ['Type', 'Jenis'], records: ['records', 'catatan'], no_records: ['No records yet', 'Belum ada catatan'], print: ['Print', 'Cetak'], fin_report: ['FINANCE REPORT', 'LAPORAN KEUANGAN']
 };
 
 init();
